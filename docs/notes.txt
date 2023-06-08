@@ -1,0 +1,7 @@
+facial structure
+6 xy coordinates
+eyes aspect ratio
+dlib -> facial landmark detection
+
+conversion to gray
+detector -> detects
