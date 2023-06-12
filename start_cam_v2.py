@@ -132,7 +132,7 @@ def start_camera(blink_threshold = 0.2, unblink_threshold = 0.22):
                 cv.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
         
             t2 = time.time()
-            # print (f'frame_time: {t2-t1}')
+            print (f'frame_time: {t2-t1}')
 
         except:
             # On error, release the cap object
