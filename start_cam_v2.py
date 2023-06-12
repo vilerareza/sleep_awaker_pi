@@ -84,57 +84,52 @@ def start_camera(blink_threshold = 0.2, unblink_threshold = 0.22):
 
     while(True):
 
-        t1 = time.time()
-        ret, frame = vid.read()
-        # Frame conversion to gray
-        # Resize the frame
-        #h, w = frame.shape[:2]
-        # factor = img_size[0]/w
-        # frame = cv.resize(frame, (int(w*factor), int(h*factor)))
-        img_gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-        # Face detection
-        rects = face_detector(img_gray, 0)
+        try:
+            t1 = time.time()
+            ret, frame = vid.read()
+            # Frame conversion to gray
+            # Resize the frame
+            #h, w = frame.shape[:2]
+            # factor = img_size[0]/w
+            # frame = cv.resize(frame, (int(w*factor), int(h*factor)))
+            img_gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+            # Face detection
+            rects = face_detector(img_gray, 0)
 
-        for rect in rects:
-            shape = face_predictor(img_gray, rect)
-            shape = shape_to_np(shape)
-            eye_l = shape[l_index]
-            eye_r = shape[r_index]
-            ear_r = calculate_ear(eye_r)
-            ear_l = calculate_ear(eye_l)
+            for rect in rects:
+                shape = face_predictor(img_gray, rect)
+                shape = shape_to_np(shape)
+                eye_l = shape[l_index]
+                eye_r = shape[r_index]
+                ear_r = calculate_ear(eye_r)
+                ear_l = calculate_ear(eye_l)
 
-            ear_max = max(ear_r, ear_l)
+                ear_max = max(ear_r, ear_l)
 
-            # Check the blink
-            if ear_max < blink_threshold:
-                #print (f'ear: {ear_max}')
-                #print ('blink')
-                with blink_event_condition:
-                    blink_event_condition.notify_all()
+                # Check the blink
+                if ear_max < blink_threshold:
+                    #print (f'ear: {ear_max}')
+                    #print ('blink')
+                    with blink_event_condition:
+                        blink_event_condition.notify_all()
 
-            elif ear_max >= unblink_threshold:
-                with unblink_event_condition:
-                    unblink_event_condition.notify_all()
+                elif ear_max >= unblink_threshold:
+                    with unblink_event_condition:
+                        unblink_event_condition.notify_all()
 
-            leftEyeHull = cv.convexHull(eye_l)
-            rightEyeHull = cv.convexHull(eye_r)
-            cv.drawContours(frame, [leftEyeHull], -1, (0, 255, 0), 1)
-            cv.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
+                leftEyeHull = cv.convexHull(eye_l)
+                rightEyeHull = cv.convexHull(eye_r)
+                cv.drawContours(frame, [leftEyeHull], -1, (0, 255, 0), 1)
+                cv.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
+        
+            t2 = time.time()
+            print (f'frame_time: {t2-t1}')
 
-        # Display the resulting frame
-        cv.imshow('frame', frame)
+        except:
+            # On error, release the cap object
+            vid.release()
+            break
 
-        # the 'q' button is set as the
-        if cv.waitKey(1) & 0xFF == ord('q'):
-           break
-    
-        t2 = time.time()
-        # print (f'frame_time: {t2-t1}')
-
-    # After the loop release the cap object
-    vid.release()
-    # Destroy all the windows
-    cv.destroyAllWindows()
 
 def stop_thread(stop_event, thread):
     print ('Stopping thread')
