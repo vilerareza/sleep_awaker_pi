@@ -61,7 +61,7 @@ def wait_for_blink(timeout = 3):
                 relay.off()
 
 
-def start_camera(blink_threshold = 0.2, unblink_threshold = 0.22):
+def start_camera(blink_threshold = 0.25, unblink_threshold = 0.28):
 
     global blink_event_condition
     global unblink_event_condition
