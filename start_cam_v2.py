@@ -46,6 +46,8 @@ def wait_for_blink(timeout = 3):
         with unblink_event_condition:
             # Wait for open eye first
             unblink_event_condition.wait()
+            # Turn off the relay
+            relay.off()
 
         with blink_event_condition:
             # Wait for the blink event
