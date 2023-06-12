@@ -89,6 +89,8 @@ def start_camera(blink_threshold = 0.25, unblink_threshold = 0.28):
         # Eye aspect ratio
         return ((a+b) / (2*c))
 
+    # Make sure relay is off before starting
+    relay.off()
 
     while(True):
 
@@ -165,7 +167,9 @@ def main():
         if not (start_camera_t.is_alive() and wait_for_blink_t.is_alive()):
             # DRIVE ERROR SIGNAL HERE
             break
-
+    
+    # Make sure relay is off before quit
+    relay.off()
     print ('end')
 
 if __name__ == '__main__':
