@@ -13,6 +13,9 @@ predictor_path = '../shape_predictor_68_face_landmarks.dat'
 # define a video capture object
 vid = cv.VideoCapture(0)
 
+# Relay Pin on GPIO 17 (Raspberry Header Pin 11)
+relay = Relay(pin=17)
+
 # dlib face detector
 face_detector = dlib.get_frontal_face_detector()
 # dlib face landmark predictor
@@ -32,9 +35,11 @@ is_blinked = False
 
 def wait_for_blink(timeout = 3):
 
+    global vid
     global blink_event_condition
     global unblink_event_condition
     global is_blinked
+    global relay
     
     while True:
 
@@ -49,8 +54,11 @@ def wait_for_blink(timeout = 3):
                 # Wait for the blink event
                 print ('Unblink timeout')
                 # DRIVE BLINK SIGNAL HERE
+                relay.on()
             else:
                 print ('blink refreshed')
+                # DRIVE BLINK SIGNAL HERE
+                relay.off()
 
 
 def start_camera(blink_threshold = 0.2, unblink_threshold = 0.22):
@@ -93,6 +101,7 @@ def start_camera(blink_threshold = 0.2, unblink_threshold = 0.22):
             # factor = img_size[0]/w
             # frame = cv.resize(frame, (int(w*factor), int(h*factor)))
             img_gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+            img_gray = cv.rotate(img_gray, cv.ROTATE_180)
             # Face detection
             rects = face_detector(img_gray, 0)
 
@@ -123,7 +132,7 @@ def start_camera(blink_threshold = 0.2, unblink_threshold = 0.22):
                 cv.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
         
             t2 = time.time()
-            print (f'frame_time: {t2-t1}')
+            # print (f'frame_time: {t2-t1}')
 
         except:
             # On error, release the cap object
@@ -139,11 +148,7 @@ def stop_thread(stop_event, thread):
 
 def main():
 
-    global blink_event_condition
-
-    # User GPIO 17 (Raspberry Header Pin 11)
-    relay = Relay(pin=17)
-
+    print ('Starting...')
     # Start camera
     start_camera_t = Thread(target = start_camera, args=(0.2,))
     # Wait for blink
