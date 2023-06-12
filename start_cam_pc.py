@@ -8,7 +8,7 @@ from relay import Relay
 
 
 # Face predictor path
-predictor_path = '../shape_predictor_68_face_landmarks.dat'
+predictor_path = 'shape_predictor_68_face_landmarks.dat'
 
 # define a video capture object
 vid = cv.VideoCapture(0)
