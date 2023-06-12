@@ -45,7 +45,7 @@ def wait_for_blink(timeout = 3):
 
         with blink_event_condition:
             # Wait for the blink event
-            # print ('Wait for blink...')
+            print ('Wait for blink...')
             blink_event_condition.wait()
 
         with unblink_event_condition:
@@ -114,7 +114,7 @@ def start_camera(blink_threshold = 0.25, unblink_threshold = 0.28):
                 ear_l = calculate_ear(eye_l)
 
                 ear_max = max(ear_r, ear_l)
-                print (f'ear: {ear_max}')
+                #print (f'ear: {ear_max}')
 
                 # Check the blink
                 if ear_max < blink_threshold:
@@ -133,7 +133,7 @@ def start_camera(blink_threshold = 0.25, unblink_threshold = 0.28):
                 cv.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
         
             t2 = time.time()
-            print (f'frame_time: {t2-t1}')
+            #print (f'frame_time: {t2-t1}')
 
         except:
             # On error, release the cap object
