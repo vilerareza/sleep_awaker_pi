@@ -43,6 +43,10 @@ def wait_for_blink(timeout = 3):
     
     while True:
 
+        with unblink_event_condition:
+            # Wait for open eye first
+            unblink_event_condition.wait()
+
         with blink_event_condition:
             # Wait for the blink event
             print ('Wait for blink...')
@@ -115,7 +119,8 @@ def start_camera(blink_threshold = 0.25, unblink_threshold = 0.28):
                 ear_r = calculate_ear(eye_r)
                 ear_l = calculate_ear(eye_l)
 
-                ear_max = max(ear_r, ear_l)
+                #ear_max = max(ear_r, ear_l)
+                ear_max = (ear_r + ear_l)/2
                 print (f'ear: {ear_max}')
 
                 # Check the blink
