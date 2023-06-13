@@ -130,8 +130,10 @@ def start_camera(blink_threshold = 0.25, unblink_threshold = 0.28):
                 # No face is detected
                 is_face = False
                 # Clear the waiting thread
-                blink_event_condition.notify_all()
-                unblink_event_condition.notify_all()
+                with blink_event_condition:
+                    blink_event_condition.notify_all()
+                with unblink_event_condition:
+                    unblink_event_condition.notify_all()
                 continue
 
             else:
