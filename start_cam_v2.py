@@ -64,14 +64,14 @@ def wait_for_blink(timeout = 3):
         if not is_blinked:
 
             # Wait for open eye first
-            with unblink_event_condition:
-                print ('Wait for open eye...')
-                unblink_event_condition.wait()
-                # Turn off the relay
-                relay.off()
-                # Restart the loop if there is no face detected
-                if not is_face:
-                    continue
+            # with unblink_event_condition:
+            #     print ('Wait for open eye...')
+            #     unblink_event_condition.wait()
+            #     # Turn off the relay
+            #     relay.off()
+            #     # Restart the loop if there is no face detected
+            #     if not is_face:
+            #         continue
 
             # Wait for the blink event
             with blink_event_condition:
