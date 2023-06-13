@@ -152,6 +152,8 @@ def start_camera(blink_threshold = 0.25, unblink_threshold = 0.28):
                 print ('no face')
                 # No face is detected
                 is_face = False
+                # Reset the blink flag
+                is_blinked = False
                 # Clear the waiting thread
                 with blink_event_condition:
                     blink_event_condition.notify_all()
