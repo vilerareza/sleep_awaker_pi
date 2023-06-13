@@ -1,3 +1,12 @@
+'''
+[Last updated: 13-06-2023]
+This program will be running on Raspberry Pi Device.
+The program monitors for eye blink condition by locating the face landmarks -
+and measure the Eye Aspect Ratio (EAR). 
+The EAR below the specified threshold for specified period of time will be considered as "eyes closed' condition.
+The 'eyes closed' condition will drive a specified GPIO pin that can be connected to external device such as relay.
+'''
+
 import cv2 as cv
 import numpy as np
 from scipy.spatial import distance as dist
@@ -27,13 +36,16 @@ r_index = [*range(36, 42)]
 l_index = [*range(42, 48)]
 # Target size
 img_size = (640, 480)
-
+# blink and unblink condition variables
 blink_event_condition = Condition()
 unblink_event_condition = Condition()
+# Flag for blink
 is_blinked = False
+# Flag for presence of face
 is_face = False
 
 
+# Waiting for the blink
 def wait_for_blink(timeout = 3):
 
     global vid
@@ -45,14 +57,17 @@ def wait_for_blink(timeout = 3):
     
     while True:
 
+        # Delay to prevent intense loop when there is no face
+        time.sleep(1.5)
+
         # Wait for open eye first
         with unblink_event_condition:
             unblink_event_condition.wait()
+            # Turn off the relay
+            relay.off()
             # Restart the loop if there is no face detected
             if not is_face:
                 continue
-            # Turn off the relay
-            relay.off()
 
         # Wait for the blink event
         with blink_event_condition:
@@ -68,15 +83,15 @@ def wait_for_blink(timeout = 3):
             print ('Waiting for unblink...')
             if not (unblink_event_condition.wait(timeout=timeout)):
                 print ('Unblink timeout')
-                # DRIVE BLINK SIGNAL HERE
+                # DRIVE BLINK RELAY HERE
                 relay.on()
-            else:
-                # Restart the loop if there is no face detected
-                if not is_face:
-                    continue
-                print ('blink refreshed')
-                # DRIVE BLINK SIGNAL HERE
-                relay.off()
+            # else:
+            #     # Restart the loop if there is no face detected
+            #     if not is_face:
+            #         continue
+            #     print ('blink refreshed')
+            #     # Turn off the relay
+            #     relay.off()
 
 
 def start_camera(blink_threshold = 0.25, unblink_threshold = 0.28):
