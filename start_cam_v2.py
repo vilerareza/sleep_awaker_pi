@@ -215,7 +215,7 @@ def main():
 
     print ('Starting...')
     # Start camera
-    start_camera_t = Thread(target = start_camera, args=(0.2,))
+    start_camera_t = Thread(target = start_camera, args=(0.25,))
     # Wait for blink
     wait_for_blink_t = Thread(target = wait_for_blink, args=(3,))
     start_camera_t.daemon = True
