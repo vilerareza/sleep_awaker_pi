@@ -57,29 +57,30 @@ def wait_for_blink(timeout = 3):
     
     while True:
 
-        # Delay to prevent intense loop when there is no face
+        # Delay to let the relay on after blink timeout. 
+        # Also meant to prevent intense loop when there is no face
         time.sleep(1.5)
 
-        print (is_face)
+        if not is_blinked:
 
-        # Wait for open eye first
-        with unblink_event_condition:
-            print ('Wait for open eye...')
-            unblink_event_condition.wait()
-            # Turn off the relay
-            relay.off()
-            # Restart the loop if there is no face detected
-            if not is_face:
-                continue
+            # Wait for open eye first
+            with unblink_event_condition:
+                print ('Wait for open eye...')
+                unblink_event_condition.wait()
+                # Turn off the relay
+                relay.off()
+                # Restart the loop if there is no face detected
+                if not is_face:
+                    continue
 
-        # Wait for the blink event
-        with blink_event_condition:
-            print ('Wait for blink...')
-            blink_event_condition.wait()
-            # Restart the loop if there is no face detected
-            if not is_face:
-                continue
-            print ('Blinked...')
+            # Wait for the blink event
+            with blink_event_condition:
+                print ('Wait for blink...')
+                blink_event_condition.wait()
+                # Restart the loop if there is no face detected
+                if not is_face:
+                    continue
+                print ('Blinked...')
 
         # Wait for unblink event
         with unblink_event_condition:
@@ -174,10 +175,14 @@ def start_camera(blink_threshold = 0.25, unblink_threshold = 0.28):
 
                     # Check the blink
                     if ear_max < blink_threshold:
+                        # Blink occur
+                        is_blinked = True
                         with blink_event_condition:
                             blink_event_condition.notify_all()
 
                     elif ear_max >= unblink_threshold:
+                        # Unblink occur
+                        is_blinked = False
                         with unblink_event_condition:
                             unblink_event_condition.notify_all()
         
