@@ -183,6 +183,7 @@ def start_camera(blink_threshold = 0.25, unblink_threshold = 0.28):
 
                     # Check the blink
                     if ear_max < blink_threshold:
+                        print ('blink occur')
                         # Blink occur
                         is_blinked = True
                         with blink_event_condition:
