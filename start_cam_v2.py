@@ -81,6 +81,8 @@ def wait_for_blink(timeout = 3):
                 blink_event_condition.wait()
                 # Restart the loop if there is no face detected
                 if not is_face:
+                    # Turn off the relay
+                    relay.off()
                     continue
                 print ('Blinked...')
 
@@ -94,6 +96,8 @@ def wait_for_blink(timeout = 3):
             else:
                 # Restart the loop if there is no face detected
                 if not is_face:
+                    # Turn off the relay
+                    relay.off()
                     continue
                 print ('blink refreshed')
                 # Turn off the relay
