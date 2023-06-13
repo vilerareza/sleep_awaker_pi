@@ -60,6 +60,8 @@ def wait_for_blink(timeout = 3):
         # Delay to prevent intense loop when there is no face
         time.sleep(1.5)
 
+        print (is_face)
+
         # Wait for open eye first
         with unblink_event_condition:
             print ('Wait for open eye...')
