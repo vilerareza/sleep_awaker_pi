@@ -89,13 +89,13 @@ def wait_for_blink(timeout = 3):
                 print ('Unblink timeout')
                 # DRIVE BLINK RELAY HERE
                 relay.on()
-            # else:
-            #     # Restart the loop if there is no face detected
-            #     if not is_face:
-            #         continue
-            #     print ('blink refreshed')
-            #     # Turn off the relay
-            #     relay.off()
+            else:
+                # Restart the loop if there is no face detected
+                if not is_face:
+                    continue
+                print ('blink refreshed')
+                # Turn off the relay
+                relay.off()
 
 
 def start_camera(blink_threshold = 0.25, unblink_threshold = 0.28):
