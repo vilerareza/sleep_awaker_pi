@@ -31,6 +31,7 @@ img_size = (640, 480)
 blink_event_condition = Condition()
 unblink_event_condition = Condition()
 is_blinked = False
+is_face = False
 
 
 def wait_for_blink(timeout = 3):
@@ -39,29 +40,40 @@ def wait_for_blink(timeout = 3):
     global blink_event_condition
     global unblink_event_condition
     global is_blinked
+    global is_face
     global relay
     
     while True:
 
+        # Wait for open eye first
         with unblink_event_condition:
-            # Wait for open eye first
             unblink_event_condition.wait()
+            # Restart the loop if there is no face detected
+            if not is_face:
+                continue
             # Turn off the relay
             relay.off()
 
+        # Wait for the blink event
         with blink_event_condition:
-            # Wait for the blink event
             print ('Wait for blink...')
             blink_event_condition.wait()
+            # Restart the loop if there is no face detected
+            if not is_face:
+                continue
+            print ('Blinked...')
 
+        # Wait for unblink event
         with unblink_event_condition:
-            print ('Blink. Waiting for unblink...')
+            print ('Waiting for unblink...')
             if not (unblink_event_condition.wait(timeout=timeout)):
-                # Wait for the blink event
                 print ('Unblink timeout')
                 # DRIVE BLINK SIGNAL HERE
                 relay.on()
             else:
+                # Restart the loop if there is no face detected
+                if not is_face:
+                    continue
                 print ('blink refreshed')
                 # DRIVE BLINK SIGNAL HERE
                 relay.off()
@@ -72,6 +84,7 @@ def start_camera(blink_threshold = 0.25, unblink_threshold = 0.28):
     global blink_event_condition
     global unblink_event_condition
     global is_blinked
+    global is_face
 
     def shape_to_np(shape):
 
@@ -113,33 +126,37 @@ def start_camera(blink_threshold = 0.25, unblink_threshold = 0.28):
             # Face detection
             rects = face_detector(img_gray, 0)
 
-            for rect in rects:
-                shape = face_predictor(img_gray, rect)
-                shape = shape_to_np(shape)
-                eye_l = shape[l_index]
-                eye_r = shape[r_index]
-                ear_r = calculate_ear(eye_r)
-                ear_l = calculate_ear(eye_l)
+            if len(rects) == 0:
+                # No face is detected
+                is_face = False
+                # Clear the waiting thread
+                blink_event_condition.notify_all()
+                unblink_event_condition.notify_all()
+                continue
 
-                #ear_max = max(ear_r, ear_l)
-                ear_max = (ear_r + ear_l)/2
-                print (f'ear: {ear_max}')
+            else:
+                # Face is detected
+                is_face = True
+                for rect in rects:
+                    shape = face_predictor(img_gray, rect)
+                    shape = shape_to_np(shape)
+                    eye_l = shape[l_index]
+                    eye_r = shape[r_index]
+                    ear_r = calculate_ear(eye_r)
+                    ear_l = calculate_ear(eye_l)
 
-                # Check the blink
-                if ear_max < blink_threshold:
-                    #print (f'ear: {ear_max}')
-                    #print ('blink')
-                    with blink_event_condition:
-                        blink_event_condition.notify_all()
+                    #ear_max = max(ear_r, ear_l)
+                    ear_max = (ear_r + ear_l)/2
+                    print (f'ear: {ear_max}')
 
-                elif ear_max >= unblink_threshold:
-                    with unblink_event_condition:
-                        unblink_event_condition.notify_all()
+                    # Check the blink
+                    if ear_max < blink_threshold:
+                        with blink_event_condition:
+                            blink_event_condition.notify_all()
 
-                leftEyeHull = cv.convexHull(eye_l)
-                rightEyeHull = cv.convexHull(eye_r)
-                cv.drawContours(frame, [leftEyeHull], -1, (0, 255, 0), 1)
-                cv.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
+                    elif ear_max >= unblink_threshold:
+                        with unblink_event_condition:
+                            unblink_event_condition.notify_all()
         
             t2 = time.time()
             #print (f'frame_time: {t2-t1}')
