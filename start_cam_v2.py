@@ -143,6 +143,8 @@ def start_camera(blink_threshold = 0.25, unblink_threshold = 0.28):
             rects = face_detector(img_gray, 0)
 
             if len(rects) == 0:
+                # Face is detected
+                print ('no face')
                 # No face is detected
                 is_face = False
                 # Clear the waiting thread
@@ -154,6 +156,7 @@ def start_camera(blink_threshold = 0.25, unblink_threshold = 0.28):
 
             else:
                 # Face is detected
+                print ('face detected')
                 is_face = True
                 for rect in rects:
                     shape = face_predictor(img_gray, rect)
