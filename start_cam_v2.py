@@ -161,7 +161,8 @@ def start_camera(blink_threshold = 0.25, unblink_threshold = 0.28):
             t2 = time.time()
             #print (f'frame_time: {t2-t1}')
 
-        except:
+        except Exception as e:
+            print (e)
             # On error, release the cap object
             vid.release()
             break
