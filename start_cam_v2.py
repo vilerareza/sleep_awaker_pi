@@ -61,6 +61,8 @@ def wait_for_blink(timeout = 3):
         # Also meant to prevent intense loop when there is no face
         time.sleep(1.5)
 
+        print (is_blinked)
+
         if not is_blinked:
 
             # Wait for open eye first
