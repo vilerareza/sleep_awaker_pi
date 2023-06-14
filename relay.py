@@ -8,7 +8,7 @@ class Relay():
 
     def relay_init(self):
         # GPIO is in BCM mode
-        #GPIO.setmode(GPIO.BOARD)
+        GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.relayPin, GPIO.OUT)
 
     def on(self):
