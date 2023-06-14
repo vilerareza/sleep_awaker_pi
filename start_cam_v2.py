@@ -210,6 +210,7 @@ def main():
     start_camera_t.start()
     wait_for_blink_t.daemon = True
     wait_for_blink_t.start()
+    print ('Running...')
 
     while True:
         time.sleep(3)
