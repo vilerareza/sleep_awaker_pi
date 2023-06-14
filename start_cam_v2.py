@@ -61,19 +61,7 @@ def wait_for_blink(timeout = 3):
         # Also meant to prevent intense loop when there is no face
         time.sleep(1.5)
 
-        print (is_blinked)
-
         if not is_blinked:
-
-            # Wait for open eye first
-            # with unblink_event_condition:
-            #     print ('Wait for open eye...')
-            #     unblink_event_condition.wait()
-            #     # Turn off the relay
-            #     relay.off()
-            #     # Restart the loop if there is no face detected
-            #     if not is_face:
-            #         continue
 
             # Wait for the blink event
             with blink_event_condition:
@@ -196,7 +184,7 @@ def start_camera(blink_threshold = 0.25, unblink_threshold = 0.28):
                             unblink_event_condition.notify_all()
         
             t2 = time.time()
-            #print (f'frame_time: {t2-t1}')
+            print (f'frame_time: {t2-t1}')
 
         except Exception as e:
             print (e)
