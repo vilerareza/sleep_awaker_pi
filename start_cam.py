@@ -45,6 +45,9 @@ def wait_for_blink(timeout = 3):
 
         if not is_blinked:
 
+            # Turn off the relay
+            relay.off()
+
             # Wait for the blink event
             with blink_event_condition:
                 print ('Wait for blink...')
