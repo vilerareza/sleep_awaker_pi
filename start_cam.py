@@ -212,7 +212,7 @@ def main(blink_thres = 0.25,
     blink_event_condition = Condition()
     unblink_event_condition = Condition()
     # Start camera
-    start_camera_t = Thread(target = start_camera, args=(blink_thres, unblink_thres, flip, predictor_path))
+    start_camera_t = Thread(target = start_camera, args=(blink_thres, unblink_thres, flip, predictor_path,))
     # Wait for blink
     wait_for_blink_t = Thread(target = wait_for_blink, args=(blink_timeout,))
     start_camera_t.daemon = True
