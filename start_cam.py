@@ -198,7 +198,8 @@ def main(blink_thres = 0.25,
          blink_timeout = 3.0, 
          flip=True, 
          relay_pin=17, 
-         predictor_path = '.'):
+         predictor_path = '.',
+         res = (640, 480)):
 
     global relay 
     global blink_event_condition 
@@ -212,7 +213,8 @@ def main(blink_thres = 0.25,
     blink_event_condition = Condition()
     unblink_event_condition = Condition()
     # Start camera
-    start_camera_t = Thread(target = start_camera, args=(blink_thres, unblink_thres, flip, predictor_path,))
+    start_camera_t = Thread(target = start_camera, args=(blink_thres,
+                                                        unblink_thres, flip, res, predictor_path,))
     # Wait for blink
     wait_for_blink_t = Thread(target = wait_for_blink, args=(blink_timeout,))
     start_camera_t.daemon = True
