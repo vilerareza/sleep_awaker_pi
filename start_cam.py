@@ -144,7 +144,7 @@ def start_camera(blink_threshold = 0.25,
 
             if len(rects) == 0:
                 # Face is detected
-                #print ('no face')
+                print ('no face')
                 # No face is detected
                 is_face = False
                 # Reset the blink flag
@@ -170,11 +170,10 @@ def start_camera(blink_threshold = 0.25,
 
                     #ear_max = max(ear_r, ear_l)
                     ear_max = (ear_r + ear_l)/2
-                    #print (f'ear: {ear_max}')
+                    print (f'ear: {ear_max}')
 
                     # Check the blink
                     if ear_max < blink_threshold:
-                        #print ('blink occur')
                         # Blink occur
                         is_blinked = True
                         with blink_event_condition:
@@ -242,8 +241,8 @@ if __name__ == '__main__':
 
     # Argument handler
     parser = argparse.ArgumentParser()
-    parser.add_argument('--blink_thres', type = float, default = 0.25, required = False)
-    parser.add_argument('--unblink_thres', type = float, default = 0.28, required = False)
+    parser.add_argument('--blink_thres', type = float, default = 0.27, required = False)
+    parser.add_argument('--unblink_thres', type = float, default = 0.3, required = False)
     parser.add_argument('--blink_timeout', type = float, default = 3.0, required = False)
     parser.add_argument('--flip', type = bool, default = True, required = False)
     parser.add_argument('--relay_pin', type = int, default = 17, required = False)
