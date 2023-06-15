@@ -249,7 +249,7 @@ if __name__ == '__main__':
     # Parsing
     args = parser.parse_args()
     blink_thres = args.blink_thres
-    unblink_thres = args.blink_thres
+    unblink_thres = args.unblink_thres
     blink_timeout = args.blink_timeout
     flip = args.flip
     relay_pin = args.relay_pin
