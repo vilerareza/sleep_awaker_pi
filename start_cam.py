@@ -141,7 +141,7 @@ def start_camera(blink_threshold = 0.25,
 
             if len(rects) == 0:
                 # Face is detected
-                print ('no face')
+                #print ('no face')
                 # No face is detected
                 is_face = False
                 # Reset the blink flag
@@ -155,7 +155,7 @@ def start_camera(blink_threshold = 0.25,
 
             else:
                 # Face is detected
-                print ('face detected')
+                #print ('face detected')
                 is_face = True
                 for rect in rects:
                     shape = face_predictor(img_gray, rect)
