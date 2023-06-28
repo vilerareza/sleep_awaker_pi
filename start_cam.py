@@ -150,8 +150,8 @@ def start_camera(blink_threshold = 0.25,
             rects = face_detector(img_gray, 0)
 
             if len(rects) == 0:
-                # Face is detected
-                print ('no face')
+                # Face is not detected
+                # print ('no face')
                 # No face is detected
                 is_face = False
                 # Reset the blink flag
@@ -177,7 +177,7 @@ def start_camera(blink_threshold = 0.25,
 
                     #ear_max = max(ear_r, ear_l)
                     ear_max = (ear_r + ear_l)/2
-                    print (f'ear: {ear_max}')
+                    # print (f'ear: {ear_max}')
 
                     # Check the blink
                     if ear_max < blink_threshold:
