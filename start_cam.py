@@ -9,6 +9,7 @@ The 'eyes closed' condition will drive a specified GPIO pin that can be connecte
 import argparse
 import time
 from threading import Condition, Thread
+from picamera2 import Picamera2
 import cv2 as cv
 import dlib
 import numpy as np
@@ -112,7 +113,12 @@ def start_camera(blink_threshold = 0.25,
         return ((a+b) / (2*c))
 
     # define a video capture object
-    vid = cv.VideoCapture(0)
+    # vid = cv.VideoCapture(0)
+    cam = Picamera2()
+    # Configure the camera
+    config = cam.create_preview_configuration(main={"size": res, "format": "BGR888"})
+    cam.configure(config)
+    cam.start()
     # Setting resolution
     #vid.set(3, 640)
     #vid.set(3, 480)
@@ -133,7 +139,8 @@ def start_camera(blink_threshold = 0.25,
         try:
             #t1 = time.time()
             # Read the frame
-            ret, frame = vid.read()
+            # ret, frame = vid.read()
+            frame = cam.capture_array()
             # Frame conversion to gray
             img_gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
             # Flip
@@ -191,7 +198,8 @@ def start_camera(blink_threshold = 0.25,
         except Exception as e:
             print (e)
             # On error, release the cap object
-            vid.release()
+            #vid.release()
+            cam.stop()
             break
 
 
